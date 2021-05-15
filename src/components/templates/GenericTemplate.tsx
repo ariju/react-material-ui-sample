@@ -1,9 +1,8 @@
 import React from "react";
 import clsx from "clsx";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import * as colors from "@material-ui/core/colors";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
 import Box from "@material-ui/core/Box";
@@ -19,34 +18,29 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import IconButton from "@material-ui/core/IconButton";
 import HomeIcon from "@material-ui/icons/Home";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import Brightness7Icon from "@material-ui/icons/Brightness7";
+import Brightness4Icon from "@material-ui/icons/Brightness4";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 
 const drawerWidth = 240;
 
-const theme = createMuiTheme({
-  typography: {
-    fontFamily: [
-      "Noto Sans JP",
-      "Lato",
-      "游ゴシック Medium",
-      "游ゴシック体",
-      "Yu Gothic Medium",
-      "YuGothic",
-      "ヒラギノ角ゴ ProN",
-      "Hiragino Kaku Gothic ProN",
-      "メイリオ",
-      "Meiryo",
-      "ＭＳ Ｐゴシック",
-      "MS PGothic",
-      "sans-serif",
-    ].join(","),
-  },
-  palette: {
-    primary: { main: colors.blue[800] }, // テーマの色
-  },
-});
+const fontFamily = [
+  "Noto Sans JP",
+  "Lato",
+  "游ゴシック Medium",
+  "游ゴシック体",
+  "Yu Gothic Medium",
+  "YuGothic",
+  "ヒラギノ角ゴ ProN",
+  "Hiragino Kaku Gothic ProN",
+  "メイリオ",
+  "Meiryo",
+  "ＭＳ Ｐゴシック",
+  "MS PGothic",
+  "sans-serif",
+].join(",");
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -128,7 +122,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     link: {
       textDecoration: "none",
-      color: theme.palette.text.secondary,
+      color: "inherit",
     },
   })
 );
@@ -137,10 +131,7 @@ const Copyright = () => {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" to="/">
-        管理画面
-      </Link>{" "}
-      {new Date().getFullYear()}
+      管理画面 {new Date().getFullYear()}
       {"."}
     </Typography>
   );
@@ -163,6 +154,26 @@ const GenericTemplate: React.FC<GenericTemplateProps> = ({
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const [darkMode, setDarkMode] = React.useState(
+    localStorage.getItem("darkMode") === "on" ? true : false
+  );
+  const handleDarkModeOn = () => {
+    localStorage.setItem("darkMode", "on");
+    setDarkMode(true);
+  };
+  const handleDarkModeOff = () => {
+    localStorage.setItem("darkMode", "off");
+    setDarkMode(false);
+  };
+  const theme = createMuiTheme({
+    typography: {
+      fontFamily: fontFamily,
+    },
+    palette: {
+      primary: { main: colors.blue[800] },
+      type: darkMode ? "dark" : "light",
+    },
+  });
 
   return (
     <ThemeProvider theme={theme}>
@@ -194,6 +205,15 @@ const GenericTemplate: React.FC<GenericTemplateProps> = ({
             >
               管理画面
             </Typography>
+            {darkMode ? (
+              <IconButton color="inherit" onClick={handleDarkModeOff}>
+                <Brightness7Icon />
+              </IconButton>
+            ) : (
+              <IconButton color="inherit" onClick={handleDarkModeOn}>
+                <Brightness4Icon />
+              </IconButton>
+            )}
           </Toolbar>
         </AppBar>
         <Drawer
